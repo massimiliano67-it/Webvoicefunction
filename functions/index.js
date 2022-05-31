@@ -38,6 +38,44 @@ function saveToDb(pageToSave,timeSlot) {
 }
 
 
+
+function saveSlotoDb(timeSlot) {
+
+    var valuepage = "";
+
+    const optionget = {
+        url: 'https://webvoice-347112-default-rtdb.firebaseio.com/page.json',
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    }
+
+    requestNode(optionget, function(error, requestInternal, body){
+        console.log("--- READ DATA -- " + body);
+        bodyparsed = JSON.parse(body)
+
+        valuepage = bodyparsed.value;
+    });
+
+    console.log("---VALUE -- " + valuepage);
+    const options = {
+        url: 'https://webvoice-347112-default-rtdb.firebaseio.com/page.json',
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({
+            "slottime" : timeSlot
+        })
+    };
+
+    requestNode(options, function(error, requestInternal, body){
+        console.log("--- write DATA -- " + body);
+ });
+}
+
+
 app.intent("Default Welcome Intent", (conv) => {
     console.log("---- Default Welcome Intent ----");
     return conv.ask("Bienvenido al Command Center");
@@ -60,6 +98,19 @@ app.intent("Reportes", (conv,params) => {
     }
     return conv.ask("Perfecto, le muestro sus reportes");
 });
+
+app.intent("TimeSlot", (conv,params) => {
+    console.log("---- Default Reportes ---- " + params.timeslot);
+    
+    if(params.timeSlot == "mes")
+        saveSlotoDb("month")
+    else
+    saveSlotoDb("week")
+    return conv.ask("Perfecto, le muestro sus reportes");
+});
+
+
+
 
 
 app.intent("Pagina principal", (conv) => {
