@@ -305,6 +305,7 @@ app.intent("ParametricsReports", (conv, params) => {
                 "product": productToSend,
                 "startDate": startDateToSend,
                 "endDate": endDateToSend,
+                "update": "Y"
             })
         };
 
