@@ -250,13 +250,13 @@ app.intent("ParametricsReports", (conv, params) => {
     console.log("---- startDate --- " + startDate);
     console.log("---- endDate --- " + endDate);
 
-    if (startDate != null || startDate != "")
+  /*  if (startDate != null || startDate != "")
         startDate = converDate(startDate)
 
     if (endDate != null || endDate != "")
         endDate = converDate(endDate)
 
-
+*/
 
 
     console.log("--- start date -- " + startDate)
@@ -266,7 +266,7 @@ app.intent("ParametricsReports", (conv, params) => {
 
 
     const optionget = {
-        url: 'https://webvoice-347112.firebaseio.com/page.json',
+        url: 'https://webvoice-347112-default-rtdb.firebaseio.com/page.json',
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -282,6 +282,7 @@ app.intent("ParametricsReports", (conv, params) => {
         customerToSend = bodyparsed.customer;
         startDateToSend = bodyparsed.startDate;
         endDateToSend = bodyparsed.endeDate;
+        var update = bodyparsed.update;
 
         if (city != bodyparsed.city && city != null && city != "")
             var cityToSend = city;
@@ -290,11 +291,19 @@ app.intent("ParametricsReports", (conv, params) => {
         if (customer != bodyparsed.customer && customer != null && customer != "")
             var customerToSend = customer;
         if (startDate != bodyparsed.startDate && startDate != null && startDate != "")
-            var startDateToSend = startDate;
+            var startDateToSend = converDate(startDate);
         if (endDate != bodyparsed.endDate && endDate != null && endDate != "")
-            var endDateToSend = endDate;
+            var endDateToSend = converDate(endDate);
+        if (update == "N")
+            updateToSend = "Y";
+        else
+            updateToSend = "N";
+
+
+
+
         const options = {
-            url: 'https://webvoice-347112.firebaseio.com/page.json',
+            url: 'https://webvoice-347112-default-rtdb.firebaseio.com/page.json',
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -305,7 +314,7 @@ app.intent("ParametricsReports", (conv, params) => {
                 "product": productToSend,
                 "startDate": startDateToSend,
                 "endDate": endDateToSend,
-                "update": "Y"
+                "update": updateToSend
             })
         };
 
