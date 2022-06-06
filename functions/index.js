@@ -244,95 +244,121 @@ app.intent("ParametricsReports", (conv, params) => {
     var startDate = params.RangeData.startDate;
     var endDate = params.RangeData.endDate;
 
+    var canSend = false;
+    var testResponse = "Disculpe no entendi. Podrias reptir."
+
+
     console.log("---- product --- " + productos);
     console.log("---- customer --- " + customer);
     console.log("---- city --- " + city);
     console.log("---- startDate --- " + startDate);
     console.log("---- endDate --- " + endDate);
 
-  /*  if (startDate != null || startDate != "")
-        startDate = converDate(startDate)
-
-    if (endDate != null || endDate != "")
-        endDate = converDate(endDate)
-
-*/
+    /*  if (startDate != null || startDate != "")
+          startDate = converDate(startDate)
+  
+      if (endDate != null || endDate != "")
+          endDate = converDate(endDate)
+  
+  */
 
 
     console.log("--- start date -- " + startDate)
     console.log("--- end date -- " + endDate)
 
-
-
-
-    const optionget = {
-        url: 'https://webvoice-347112-default-rtdb.firebaseio.com/page.json',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+    if (city != null && city != "") {
+        canSend = true;
+    }
+    if (productos != null && productos != "") {
+        canSend = true;
+    }
+    if (customer != null && customer != "") {
+        canSend = true;
+    }
+    if (startDate != null && startDate != "") {
+        canSend = true;
+    }
+    if (endDate != null && endDate != "") {
+        canSend = true;
     }
 
-    requestNode(optionget, function (error, requestInternal, body) {
-        console.log("--- READ DATA -- " + body);
-        bodyparsed = JSON.parse(body)
-
-        cityToSend = bodyparsed.city;
-        productToSend = bodyparsed.product;
-        customerToSend = bodyparsed.customer;
-        startDateToSend = bodyparsed.startDate;
-        endDateToSend = bodyparsed.endeDate;
-        var update = bodyparsed.update;
-
-        if (city != bodyparsed.city && city != null && city != "")
-            var cityToSend = city;
-        if (productos != bodyparsed.product && productos != null && productos != "")
-            productToSend = productos;
-        if (customer != bodyparsed.customer && customer != null && customer != "")
-            var customerToSend = customer;
-        if (startDate != bodyparsed.startDate && startDate != null && startDate != "")
-            var startDateToSend = converDate(startDate);
-        if (endDate != bodyparsed.endDate && endDate != null && endDate != "")
-            var endDateToSend = converDate(endDate);
-        if (update == "N")
-            updateToSend = "Y";
-        else
-            updateToSend = "N";
+    if (canSend == false)
+        return conv.ask(testResponse);
 
 
-
-
-        const options = {
+    if (canSend == true) {
+        testResponse = "Perfecto, le muestro sus reportes"
+        const optionget = {
             url: 'https://webvoice-347112-default-rtdb.firebaseio.com/page.json',
-            method: 'PATCH',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                "customer": customerToSend,
-                "city": cityToSend,
-                "product": productToSend,
-                "startDate": startDateToSend,
-                "endDate": endDateToSend,
-                "update": updateToSend
-            })
-        };
+        }
 
-        requestNode(options, function (error, requestInternal, body) {
-            console.log("--- write DATA -- " + body);
+        requestNode(optionget, function (error, requestInternal, body) {
+            console.log("--- READ DATA -- " + body);
+            bodyparsed = JSON.parse(body)
+
+            cityToSend = bodyparsed.city;
+            productToSend = bodyparsed.product;
+            customerToSend = bodyparsed.customer;
+            startDateToSend = bodyparsed.startDate;
+            endDateToSend = bodyparsed.endeDate;
+            var update = bodyparsed.update;
+
+            if (city != bodyparsed.city && city != null && city != "") {
+                var cityToSend = city;
+                canSend = true;
+            }
+            if (productos != bodyparsed.product && productos != null && productos != "") {
+                productToSend = productos;
+                canSend = true;
+            }
+            if (customer != bodyparsed.customer && customer != null && customer != "") {
+                var customerToSend = customer;
+                canSend = true;
+            }
+            if (startDate != bodyparsed.startDate && startDate != null && startDate != "") {
+                var startDateToSend = converDate(startDate);
+                canSend = true;
+            }
+            if (endDate != bodyparsed.endDate && endDate != null && endDate != "") {
+                var endDateToSend = converDate(endDate);
+                canSend = true;
+            }
+            if (update == "N")
+                updateToSend = "Y";
+            else
+                updateToSend = "N";
+
+
+            
+            const options = {
+                url: 'https://webvoice-347112-default-rtdb.firebaseio.com/page.json',
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "customer": customerToSend,
+                    "city": cityToSend,
+                    "product": productToSend,
+                    "startDate": startDateToSend,
+                    "endDate": endDateToSend,
+                    "update": updateToSend
+                })
+            };
+
+            requestNode(options, function (error, requestInternal, body) {
+                console.log("--- write DATA -- " + body);
+
+            });
+
         });
-    });
+        return conv.ask("Perfecto, le muestro sus reportes");
+    };
 
-
-    // this is not best way but only for demo purpose -- should use rules
-    /* ProductSlotInDb(productos)
-     CustomerInDb(customer)
-     CityInDb(city)
-     startDateInDb(startDate)
-     endDateInDb(endDate) */
-
-
-    return conv.ask("Perfecto, le muestro sus reportes");
 });
 
 
